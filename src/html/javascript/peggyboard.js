@@ -19,21 +19,63 @@ var _messageTimer = null;
 var _sortOrder = 1;
 var global_Climbs = new Array;
 var global_Grades = new Array;
+var global_Playlists = new Array;
+var global_PlaylistClimbs = new Array;
+var global_PlaylistIndex = 0;
+var _playlistSelectedId = 0;
 
 const _maxStartingHand = 2;
 const _maxFinishingHand = 2;
 var _currentStarting;
-var _current
+var _current;
 
+var config = {};
+
+$.ajax({
+    url: _mainBackend,
+    data: {
+        function: 'getFrontendConfig'
+    },
+    type: 'POST',
+    success: function(output) { 
+        console.log(output);
+        initPage(output);
+    },
+    dataType: 'json'
+});
 //let there be light.
-initPage();
+//initPage();
 
-function initPage() {
-    generateWallLayout();
+function initPage(configuration) {
+    config = configuration;
+
+    if (config.wallLayout == 'gridOffset') {
+        generateGridOffsetWallLayout();
+    } else if(config.wallLayout == 'grid') {
+        generateGridWallLayout();
+    } else {
+        generateGridWallLayout();
+    }
+    
     loadRoutes();
+    loadPlaylists();
     initSwipeEvents();
     setScreenSize();
     getVersion();
+}
+
+function generateRouteName() {
+    $.ajax({
+        url: _mainBackend,
+        data: {
+            function: 'generateName'
+        },
+        type: 'POST',
+        success: function(output) {
+            $("#routeName").val(output);
+        },
+        dataType: 'json'
+    });
 }
 
 function setScreenSize() {
@@ -75,7 +117,7 @@ function initSwipeEvents() {
     });
 }
 
-function generateWallLayout() {
+function generateGridOffsetWallLayout() {
     //This is a bit funky, but it is to generate a table in a zig-zag pattern
     // to make it easier for the neopixels to light up in a simple manner.
     // simply put, it generates a tables with layout like so:
@@ -100,27 +142,27 @@ function generateWallLayout() {
     var global_x = 0;
     var numbers = ['18', '', '17', '', '16', '', '15', '', '14', '', '13', '', '12', '', '11', '', '10', '', '9', '', '8', '', '7', '', '6', '', '5', '', '4', '', '3', '', '2', '', '1']
     var letters = ['A', '', 'B', '', 'C', '', 'D', '', 'E', '', 'F', '', 'G', '', 'H', '', 'I', '', 'J', '', 'K'];
-    for (y = 0; y < 36; y++) {
+    for (y = 0; y < 36; y++) { // Height
         var patternedCount_1 = 17;
         var patternedCount_2 = 18;
         var row = $('<tr>');
-        for (x = 0; x < 22; x++) {
+        for (x = 0; x < 22; x++) { // Width
             var col = $('<td>');
             var cont = $('<div>');
-            if ((x == 0) && (y % 2 == 0)) {
+            if ((x == 0) && (y % 2 == 0)) { // Numbers every second row
                 patternedCount_1 = patternedCount_1 - first_offset_y_count;
                 cont = $('<div>').addClass('wallNumbering').text(numbers[y]);
-            } else if ((y == 35) && ((x + 1) % 2 == 0)) {
+            } else if ((y == 35) && ((x + 1) % 2 == 0)) { // Letters every second column, offset by 1
                 cont = $('<div>').addClass('wallLettering').text(letters[x - 1]);
             } else if ((x == 0) || (y == 35)) {
                 patternedCount_2 = patternedCount_2 + second_offset_y_count;
-            } else if (y % 2 == 0) {
+            } else if (y % 2 == 0) { // Grid holds
                 if ((x + 1) % 2 == 0) {
                     $(row).addClass("borderSideOffset1")
                     cont = $('<div id=hold' + patternedCount_1 + ' onclick="addHold(' + patternedCount_1 + ')">').addClass('wallHoldClickable wallHoldOffset1');
                     patternedCount_1 = patternedCount_1 + 35;
                 }
-            } else if ((y + 1) % 2 == 0) {
+            } else if ((y + 1) % 2 == 0) { // Offset holds
                 if ((x) % 2 == 0) {
                     cont = $('<div id=hold' + patternedCount_2 + ' onclick="addHold(' + patternedCount_2 + ')">').addClass('wallHoldClickable wallHoldOffset2');
                     patternedCount_2 = patternedCount_2 + 35;
@@ -159,10 +201,100 @@ function generateWallLayout() {
     $('#interactionArea').append(table);
 }
 
+function generateGridWallLayout() {
+    // This is to generate a table in a grid pattern of configurable size
+    // to make it easier for the neopixels to light up in a simple manner.
+    // it generates a tables with layout like so:
+    //
+    //    18|19|54|55|...|199
+    //    17|20|53|56|...|200
+    //    16|21|52|57|...|201
+    //    15|22|51|58|...|202
+    //    ~~~~~~~~~~~~~~~~~~~
+    //     1|36|37|71|...|216
+    //
+    // Table is generated top-left to bottom-right
+    // 
+
+    // The number of holds in height of the wall
+    var holdHeight = config.holdHeight;
+    // The number of holds in width of the wall
+    var holdWidth = config.holdWidth;
+    
+    var colOffset = (holdHeight * 2);
+    var table = $("<table id='gridTable'>").addClass('wallTable');
+
+    for (y = 0; y <= holdHeight; y++) {
+        var row = $('<tr>');
+        // Active hold is set to the left most value in row
+        var activeHold = holdHeight - y;
+        // Offset is based on the difference between col1 and col2 (see example)
+        // 1, 3, 5, 7, etc..
+        var activeHoldOffset = (y * 2) + 1;
+        for (x = 0; x <= holdWidth; x++) {
+            var col = $('<td>');
+            var cont = $('<div>');
+            if (x == 0) {
+                // Numbers are output down to 1, 0 is skipped.
+                if (y != holdHeight) {
+                    cont = $('<div>').addClass('wallNumbering').text(holdHeight - y);
+                }
+            } else if ((y == holdHeight) && (x != 0)) {
+                // Letters based on UTF codes. A = 65, B = 66, etc..
+                // Start at 64 as x=1 when A should be written
+                // Will get a little funky for width > 26
+                cont = $('<div>').addClass('wallLettering').text(String.fromCharCode(64 + x));
+            } else {
+                $(row).addClass("borderSideOffset1");
+                cont = $('<div id=hold' + activeHold + ' onclick="addHold(' + activeHold + ')">').addClass('wallHoldClickable wallHoldOffset1');
+                
+                // Calculation for the next hold value
+                if (x % 2 == 0) {
+                    // For even columns, the next value will be double
+                    // the holdHeight; minus the offset, added to activeHold
+                    // Example: holdHeight = 18
+                    // activeHold = 19; the next activeHold would be 54
+                    // ((18 * 2) - 1) + 19 = 54
+                    activeHold += colOffset - activeHoldOffset;
+                } else {
+                    // For odd columns, the next value will be the offset 
+                    // added to activeHold
+                    // Example: holdHeight = 18
+                    // activeHold = 18; the next activeHold would be 19
+                    activeHold += activeHoldOffset;
+                }
+            }
+
+            // Midpoint vertically to draw line
+            if (x + 1 == Math.floor(holdWidth / 2)) {
+                $(col).addClass("borderSideOffsetMiddle");
+            } else {
+                $(col).addClass("borderSideOffset1");
+            }
+
+            // Midpoint horizontally to draw line
+            if (y + 1 == Math.floor(holdHeight / 2)) {
+                $(col).addClass("borderBottomOffsetMiddle");
+            } else {
+                $(col).addClass("borderBottomOffset1");
+            }
+
+            // console.log("H" + y + "W" + x + ": ", cont);
+            col.append(cont);
+            row.append(col);
+        }
+
+        table.append(row);
+    }
+
+    $('#interactionArea').append(table);
+}
+
 function addHold(id) {
     var type = 'startingHand';
     var plainText = 'Starting Hold';
-    var color = '00FF00';
+    //var color = '00FF00';
+    var color = config.colorStart;
 
     //Check if max amount of starting and ending hand holds has reached.
     var maxStartingReached = (_currentProblem.filter(function(obj) {
@@ -188,22 +320,25 @@ function addHold(id) {
         }).indexOf(id);
         _currentProblem.splice(removeHold, 1);
 
+        // Checks currently selected type, to determine next
         switch (currentType) {
             case "startingHand":
                 type = "handHold";
                 plainText = 'Hand Hold';
-                color = "6600FF";
+                color = config.colorHand;
                 break;
             case "handHold":
                 type = "footHold";
                 plainText = 'Foot Hold';
-                color = "FF0000";
+                //color = "FF0000";
+                color = config.colorFoot;
                 break;
             case "footHold":
                 if (!maxFinishingReached) {
                     type = "finishingHand";
                     plainText = 'Finishing Hold';
-                    color = "0000FF";
+                    //color = "0000FF";
+                    color = config.colorFinish;
                 } else {
                     type = "none";
                 }
@@ -213,13 +348,13 @@ function addHold(id) {
                 break;
             default:
                 type = "handHold";
-                color = "6600FF";
+                color = config.colorHand;
         }
     } else {
         if (type == "startingHand" && maxStartingReached) {
             type = "handHold";
             plainText = 'Hand Hold';
-            color = "6600FF";
+            color = config.colorHand;
         }
     }
 
@@ -235,12 +370,31 @@ function addHold(id) {
             $("#messageArea").hide();
         }, 500);
         $("#hold" + id).addClass(type);
-        _currentProblem.push({
+        var hold = {
             hold: id,
             type: type,
             color: color
-        });
+        };
+        _currentProblem.push(hold);
+        light_hold(hold);
+    } else {
+        light_hold({hold:id, color:"000000"});
     }
+}
+
+function light_hold(hold) {
+    // Light an individually addressed hold
+    // Fire and forget... but should consider handling failure by removing 
+    // frontend light or showing error
+    $.ajax({
+        url: _mainBackend,
+        data: {
+            function: 'setLed',
+            parameter: JSON.stringify(hold)
+        },
+        type: 'POST',
+        dataType: 'json'
+    });
 }
 
 function remove_hold(id) {
@@ -315,6 +469,7 @@ function clearAll(bypass = false, callback) {
         });
 
         $("#selectedRouteName").text(""); //clear the name if there was one;
+        document.getElementById("regrade").style.display = "none";
     } else {
         console.log("Clear Canceled.")
     }
@@ -328,12 +483,17 @@ function saveRoute() {
         problem: JSON.stringify(_currentProblem)
     };
 
+    if (options.author == "") {
+        options.author = $("#routeAuthor").attr('placeholder');
+    }
+
     if (options.name == "" || options.grade == "" || options.author == "" || options.problem == "") {
         alert("ERROR: Please ensure all fields are filled.")
         return;
     }
 
-    // escape any quote and apostrophes so database doesn't break.
+    // TODO: Just use prepared statements...
+    // escape any quote and apostrophes so database doesn't break. 
     options.name = options.name.replace(/'/g, "\\'");
     options.author = options.author.replace(/'/g, "\\'");
 
@@ -404,13 +564,37 @@ function getRoutes(sortType, sortOrder, callback) {
         },
         type: 'POST',
         success: function(output) {
-            for (i = 0; i < output.length; i++) {
-                global_Climbs[i] = JSON.parse(output[i]);
-            }
+            global_Climbs = output;
             if (typeof(callback) != "undefined") {
                 callback(global_Climbs);
                 console.log('getRoutes was successful!');
             }
+        },
+        dataType: 'json'
+    });
+}
+
+function deleteClimb(id) {
+    var route = global_Climbs.filter(x => x.id == id)[0];
+    if (route == undefined) {
+        console.log("Route not found; unable to delete.");
+        return;
+    }
+    var warnDialog = confirm("Are you sure you would like to delete the problem '" + route.name + "'?");
+    if (!warnDialog) {
+        console.log("Route not deleted due to user decline");
+        return;
+    }
+    $.ajax({
+        url: _mainBackend,
+        data: {
+            function: 'deleteRoute',
+            parameter: id
+        },
+        type: 'POST',
+        success: function(output) {
+            loadRoutes();
+            console.log("Route was deleted successfully");
         },
         dataType: 'json'
     });
@@ -432,12 +616,27 @@ function populateClimb(id, redirect = false) {
             }
             _currentProblem = holds; //set the new current to loaded one.
             $("#selectedRouteName").text(route.name + ', V' + route.grade);
+            document.getElementById("regrade").style.display = "inline-block";
+            grade = parseInt(route.grade);
+            if (grade + 1 < 16) {
+                $("#upgradeRoute").show();
+                $("#upgradeRoute").text("Upgrade V" + (grade + 1));
+            } else {
+                $("#upgradeRoute").hide();
+            }
+            if (grade - 1 >= 0) {
+                $("#downgradeRoute").show();
+                $("#downgradeRoute").text("Sandbag V" + (grade - 1));
+            } else {
+                $("#downgradeRoute").hide();
+            }
             for (hold in holds) {
                 $("#hold" + holds[hold].hold).addClass(holds[hold].type);
             }
             if (redirect) {
                 toggleLoadSelection();
             }
+            lightCurrent();
         }
     }
 }
@@ -469,6 +668,43 @@ function toggleMenuSelection() {
     }
 }
 
+function toggleSandbagSelection() {
+    if ($("#regradeItems").is(":visible")) {
+        $("#regradeItems").hide();
+    } else {
+        $("#regradeItems").show();
+        document.addEventListener("click", function(event) {
+            if (event.target.id == "regradeButton" || event.target.className == "regradeItem") {
+                //do nothing
+            } else {
+                $("#regradeItems").hide();
+            }
+        });
+    }
+}
+
+function updateRoute(upgrade) {
+    $("#regradeItems").hide();
+    var route = global_Climbs[_selectedIndex];
+    newGrade = upgrade ? parseInt(route.grade) + 1 : parseInt(route.grade) - 1;
+    console.log("Regrading route " + route.id + " from " + route.grade + " to " + newGrade);
+    
+    $.ajax({
+        url: _mainBackend,
+        data: {
+            function: 'updateRoute',
+            parameter: route.id,
+            parameter2: newGrade
+        },
+        type: 'POST',
+        success: function(output) {
+            loadRoutes(route.id);
+            console.log("Route was updated successfully");
+        },
+        dataType: 'json'
+    });
+}
+
 function loadRoutes(show) {
     var callback = function(DATA) {
         generateListOfClimbs(DATA);
@@ -488,11 +724,15 @@ function generateListOfClimbs(DATA) {
         " <div class='sort_by_grade' id='sortByGrade' onclick='sortList(\"grade\")'>",
         "   <span>Grade</span>",
         " </div>",
+        "</div>",
+        "<div style='display:inline-block'>",
+        "  <span class='deleteIcn' style='display:inline-block'></span>",
         "</div>"
     ].join("\n"))
     $("#climbsTable").append(sortButtons);
     for (y = 0; y < DATA.length; y++) {
-        var details = $(["<div class='main_wrap' id='route" + DATA[y].id + "' onclick='populateClimb(" + DATA[y].id + ", true)'>",
+        var details = $([
+            "<div style='display:inline-block' class='main_wrap' id='route" + DATA[y].id + "' onclick='populateClimb(" + DATA[y].id + ", true)'>",
             "  <div class='left_content'>",
             "    <div style='display:inline-block'>",
             "     <div class='climb_title'>" + DATA[y].name + "</div>",
@@ -503,7 +743,11 @@ function generateListOfClimbs(DATA) {
             "  <div class='right_content'>",
             "    <div class='climb_grade'>V" + DATA[y].grade + "</div>",
             "  </div>",
+            "</div>",
+            "<div style='display:inline-block'>",
+            "  <span class='deleteIcn' style='display:inline-block' onclick='deleteClimb(" + DATA[y].id + ")'></span>",
             "</div>"
+            
         ].join("\n"))
 
         $("#climbsTable").append(details);
@@ -571,6 +815,188 @@ function sortList(type) {
         getRoutes("GRADE", order, callback);
     } else {
         console.error("Invalid sort type.");
+    }
+}
+
+function savePlaylist() {
+    var options = {
+        name: $("#playlistName").val(),
+        mingrade: $("#minGrade").val(),
+        maxgrade: $("#maxGrade").val(),
+        orderby: $("#orderBy").val()
+    };
+
+    if (options.name == "" || options.mingrade == "" || options.maxgrade == "" || options.orderby == "") {
+        alert("ERROR: Please ensure all fields are filled.")
+        return;
+    }
+
+    console.log("Saving Playlist.");
+    $("#playlistFormStatus").show().addClass("saveForm-container-status-loading");
+
+    var callback = function(output) {
+        setTimeout(() => {
+            $("#playlistFormStatus").removeClass("saveForm-container-status-loading");
+            $("#playlistFormStatus").addClass("saveForm-container-status-success");
+            setTimeout(function() {
+                $("#playlistFormStatus").hide().removeClass("saveForm-container-status-success");
+                $("#createPlaylist").hide();
+            }, 2000);
+            loadPlaylists(); 
+        }, 2000);
+    }
+
+    $.ajax({
+        url: _mainBackend,
+        data: {
+            function: 'savePlaylist',
+            parameter: options
+        },
+        type: 'POST',
+        success: function(output) {
+            if (output != -1) {
+                if (typeof(callback) != "undefined") {
+                    callback(output);
+                    console.log('Saving was successful!');
+                }
+            } else {
+                $("#playlistFormStatus").removeClass("saveForm-container-status-loading");
+                $("#playlistFormStatus").addClass("saveForm-container-status-error");
+            }
+        },
+        error: function(ajaxContext) {
+            console.error(ajaxContext.responseText)
+            $("#playlistFormStatus").removeClass("saveForm-container-status-loading");
+            $("#playlistFormStatus").addClass("saveForm-container-status-error");
+            setTimeout(function() {
+                $("#playlistFormStatus").hide().removeClass("saveForm-container-status-error");
+                $("#createPlaylist").hide();
+            }, 2000);
+        },
+        dataType: 'json',
+    });
+}
+
+function loadPlaylists() {
+    var callback = function(output) {
+        var options = "";
+        for (i = 0; i < global_Playlists.length; i++) {
+            options += '<option value="' + i + '">' + global_Playlists[i].name + '</option>';
+        }
+        document.getElementById("openPlaylistName").innerHTML = options;
+    }
+
+    $.ajax({
+        url: _mainBackend,
+        data: {
+            function: 'getPlaylists'
+        },
+        type: 'POST',
+        success: function(output) {
+            global_Playlists = output;
+            if (typeof(callback) != "undefined") {
+                callback(global_Playlists);
+                console.log('getPlaylists was successful!');
+            }
+        },
+        dataType: 'json'
+    });
+}
+
+function loadPlaylist() {
+    _playlistSelectedId = $('#openPlaylistName').val();
+    console.log("Loading playlist " + _playlistSelectedId);
+    var playlistId = global_Playlists[_playlistSelectedId].id;
+    openPlaylistSelection(false);
+
+    var callback = function(output) {
+        populateClimb(global_PlaylistClimbs[global_PlaylistIndex].id);
+        togglePlaylistMode(true); 
+    }
+
+    $.ajax({
+        url: _mainBackend,
+        data: {
+            function: 'getPlaylistClimbs',
+            parameter: playlistId
+        },
+        type: 'POST',
+        success: function(output) {
+            global_PlaylistClimbs = output;
+            global_PlaylistIndex = 0;
+            if (typeof(callback) != "undefined") {
+                callback(global_PlaylistClimbs);
+                console.log('getPlaylistClimbs was successful!');
+            }
+        },
+        dataType: 'json'
+    });
+}
+
+function togglePlaylistMode(playlistMode) {
+    if (playlistMode) {
+        document.getElementById("loadIcn").style.display = "none";
+        document.getElementById("saveIcn").style.display = "none";
+        document.getElementById("clearIcn").style.display = "none";
+        document.getElementById("prevIcn").style.display = "inline-block";
+        document.getElementById("nextIcn").style.display = "inline-block";
+        document.getElementById("stopIcn").style.display = "inline-block";
+        updatePlaylistInfobar(true);
+    } else {
+        document.getElementById("loadIcn").style.display = "inline-block";
+        document.getElementById("saveIcn").style.display = "inline-block";
+        document.getElementById("clearIcn").style.display = "inline-block";
+        document.getElementById("prevIcn").style.display = "none";
+        document.getElementById("nextIcn").style.display = "none";
+        document.getElementById("stopIcn").style.display = "none";
+        updatePlaylistInfobar(false);
+    }
+}
+
+function updatePlaylistInfobar(active) {
+    if (active) {
+        var name = global_Playlists[_playlistSelectedId].name;
+        $("#selectedPlaylistInfo").text(name + " | " + (global_PlaylistIndex + 1) + " of " + (global_PlaylistClimbs.length));
+    } else {
+        $("#selectedPlaylistInfo").text("");
+    }
+}
+
+function nextClimb() {
+    var nextIndex = global_PlaylistIndex + 1;
+    if (nextIndex < global_PlaylistClimbs.length) {
+        populateClimb(global_PlaylistClimbs[nextIndex].id);
+        global_PlaylistIndex = nextIndex;
+        updatePlaylistInfobar(true);
+    } else {
+        console.log("Playlist finished");
+    }
+}
+
+function previousClimb() {
+    var prevIndex = global_PlaylistIndex - 1;
+    if (prevIndex >= 0) {
+        populateClimb(global_PlaylistClimbs[prevIndex].id);
+        global_PlaylistIndex = prevIndex;
+        updatePlaylistInfobar(true);
+    } else {
+        console.log("At start of playlist");
+    }
+}
+
+function openPlaylistCreation(show) {
+    if (show) {
+        $("#createPlaylist").show();
+    } else {
+        $("#createPlaylist").hide();
+    }
+}
+
+function openPlaylistSelection(show) {
+    if (show) {
+        $("#openPlaylist").show();
+    } else {
+        $("#openPlaylist").hide();
     }
 }
 

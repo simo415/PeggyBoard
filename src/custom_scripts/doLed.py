@@ -24,8 +24,15 @@ def clearBoard():
 def lightHolds():
     for hold in currentProblem:
         hexColor = int(hold['color'][::-1], 16)
-        ledWall[hold['hold']] = hexColor
+        #lv = len(hold['color'])
+        #hexColor = tuple(int(hold['color'][i:i + lv//3],16) for i in range(0, lv, lv//3))
+        ledWall[hold['hold'] - 1] = hexColor
+    log(ledWall)
     ledWall.show()
+
+def log(msg):
+   with open("doLed.log", "a") as logfile:
+       logfile.write("%s\n" % msg) 
 
 try:
     ledCmd = sys.argv[1]
@@ -36,7 +43,9 @@ except:
     print("Command error!")
     quit()
 
-LEDs = 400
+log(currentProblem)
+
+LEDs = 228
 ledWall = neopixel.NeoPixel(board.D18, LEDs, auto_write=False, pixel_order=neopixel.RGB)
 
 if ledCmd == "CLEAR":

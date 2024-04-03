@@ -76,6 +76,10 @@ html, body {
   position: relative;
 }
 
+#regrade {
+  display: none;
+}
+
 .dropup {
   position: relative;
   display: inline-block;
@@ -115,6 +119,79 @@ html, body {
 
 .menuIcn:active {
   background-image: url('/images/menu_icn_active.png');
+}
+
+.prevIcn {
+  display: none;
+  vertical-align: middle;
+  width: 25px;
+  height: 25px;
+  background-image: url('/images/prev_icn.png');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin:0 auto;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.prevIcn:active {
+  background-image: url('/images/prev_icn_active.png');
+}
+
+.nextIcn {
+  display: none;
+  vertical-align: middle;
+  width: 25px;
+  height: 25px;
+  background-image: url('/images/prev_icn.png');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin:0 auto;
+  margin-left: 5px;
+  margin-right: 5px;
+  transform: rotate(180deg);
+}
+
+.nextIcn:active {
+  background-image: url('/images/prev_icn_active.png');
+}
+
+.stopIcn {
+  display: none;
+  vertical-align: middle;
+  width: 25px;
+  height: 25px;
+  background-image: url('/images/stop_icn.png');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin:0 auto;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.stopIcn:active {
+  background-image: url('/images/stop_icn_active.png');
+}
+
+.regradeIcn {
+  display: inline-block;
+  vertical-align: middle;
+  width: 25px;
+  height: 25px;
+  background-image: url('/images/regrade_icn.png');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin:0 auto;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.regradeIcn:active {
+  background-image: url('/images/regrade_icn_active.png');
 }
 
 .lightIcn {
@@ -238,7 +315,7 @@ html, body {
 .wallLayoutArea {
   width: 90%;
   height: 95%;
-  max-width: 90%;
+  max-width: 900px;
   max-height: 95%;
   padding-bottom: 25px;
   margin: 0 auto;
@@ -360,16 +437,20 @@ html, body {
     height:540px;
     max-height: 540px;
     overflow-y: scroll;
+    width: 90%;
+    max-width: 90%;
+    text-align: center;
 }
   
 .main_wrap {
-  width: 90%;
-  max-width: 900px;
+  width: 80%;
+  max-width: 800px;
   border-collapse: collapse;
   border:1px solid black;
   padding-top: 5px;
   margin: 0 auto;
   position: relative;
+  text-align: left;
 }
 
 .main_wrap:active {
@@ -415,13 +496,16 @@ html, body {
 }
 
 .sort_options {
-  width: 90%;
+  width: 80%;
+  max-width: 800px;
   border-collapse: collapse;
   border: 1px solid black;
   padding-top: 5px;
-  margin: 0 auto;
+  margin: auto;
   position: relative;
   background: #999;
+  text-align: left;
+  display: inline-block;
 }
 
 .sort_by_name {

@@ -29,7 +29,7 @@ if (isset($_POST['function']) && !empty($_POST['function'])) {
       getPlaylists();
       break;
     case 'getPlaylistClimbs':
-      getPlaylistClimbs($parameter);
+      getPlaylistClimbs($parameter, $parameters2);
       break;
     case 'getRoutes':
       getRoutes($parameter, $parameters2);
@@ -209,8 +209,12 @@ function getPlaylists()
   }
 }
 
-function getPlaylistClimbs($playlistId) {
-  //TODO sort results
+function getPlaylistClimbs($playlistId, $orderby) {
+  # TODO sort not working
+  $sort = "";
+  if ($orderby == 'routeName' || $orderby == 'date' || $orderby == 'grade') {
+    $sort = "order by $orderby";
+  }
   $db = openDatabase();
   if ($db != 0) {
     $i = 0;
@@ -218,7 +222,8 @@ function getPlaylistClimbs($playlistId) {
             from routes r, playlist p
             where r.grade >= p.mingrade
             and r.grade <= p.maxgrade
-            and p.id = $playlistId";
+            and p.id = $playlistId
+            $sort";
     $res = $db->query($sql);
     while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
       $climbs[$i] = $row;
@@ -272,7 +277,7 @@ function openDatabase()
     CREATE TABLE IF NOT EXISTS "routes" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "routename" varchar UNIQUE NOT NULL,
-        "grade" varchar NOT NULL,
+        "grade" integer NOT NULL,
         "author" varchar(24) DEFAULT NULL,
         "date" datetime DEFAULT CURRENT_TIMESTAMP,
         "holds" varchar NOT NULL
@@ -281,8 +286,8 @@ function openDatabase()
     CREATE TABLE IF NOT EXISTS "playlist" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "name" varchar UNIQUE NOT NULL,
-        "mingrade" varchar NOT NULL,
-        "maxgrade" varchar NOT NULL,
+        "mingrade" integer NOT NULL,
+        "maxgrade" integer NOT NULL,
         "date" datetime DEFAULT CURRENT_TIMESTAMP,
         "orderby" varchar NOT NULL
     )');

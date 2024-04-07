@@ -140,7 +140,7 @@ Joining the 5V and ground rails as per diagram will also help.
 <p>
 
 <div align="center">
-  <img src="images/pb_leds.png" alt="LED Connection" width="400px"/>
+  <img src="images/pb_leds.png" alt="LED Connection" width="700px"/>
   <br><b>Figure 12.</b> LED strip connections.
 </div>
 <div align="center">

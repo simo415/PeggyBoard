@@ -54,14 +54,12 @@ When accessing the app through a mobile device the user is presented with the ro
   <br><b>Figure 5.</b> Alternating through holds.
 </div>
 
-
 The user can also view previously saved routes by clicking the folder icon or save their current route by clicking the save icon. When the user is ready to climb one of the routes they can press the light bulb icon and it will then light up the respective holds on the wall as seen in Figure 6.
 
 <div align="center">
   <img src="images/pb_wall.jpg" alt="PeggyBoard displaying a route" width="600px"/>
   <br><b>Figure 6.</b> PeggyBoard displaying a route.
 </div>
-
 
 # Updates
 
@@ -87,19 +85,36 @@ There are several different features available from the fork.
 - No longer dependent on MySql, Sqlite3 works quite effectively
 - Sqlite3 provides database and schema creation if they don't exist
 
-<br>
+## LED Controller
+- Relies on a separate Tasmota based LED controller to control addressable LED's
 
 # Setup
 
 The setup of this fork is a bit different from the main project. 
 
+## Overview
+The basic structure of the application is conceptually similar to the main project:
+```mermaid
+flowchart TD;
+    A[index.php] --> F[peggyboard.js];
+    A --> G[main.css];
+    B --> C[Database];
+    B --> D[LED Controller];
+    B --> E[config.php];
+    F --> B[main_backend.php];
+```
+1. All configuration available in config.php
+2. Database: no dependency on MySql, simply update the database connection string in config.php, sqlite is simple - database and schemas auto-created. 
+3. LED Controller: relies on Tasmota, specify the endpoint in config.php
+
 ## LED controller - Tasmota
-- Flash your Tasmota device (Espressif ESP8266, ESP32, ESP32-S or ESP32-C3) with the latest version of Tasmota
+- Flash your ESP device (Espressif ESP8266, ESP32, ESP32-S or ESP32-C3 dev boards) with the latest version of Tasmota
 - Configure the device to connect to your local Wifi
 - Setup the device with a GPIO pin as WS8212 type 1
+- Assign a static IP or hostname to device
 
 ## WebApp - Docker
-- Build the Docker file with the embedded configuration if your setup
+- Build the Docker file with the embedded configuration (config.php) of your setup
 - Map port 80 from the container to desired port
 - Volume mount /var/www/db to persist your database outside of the container
 
@@ -110,17 +125,19 @@ Follow the instructions on the main project page around PHP setup. Essentially:
 - Fix any permission problems
 
 ## Hardware
+
+Addressable LED's typically run at 5v DC, DC voltage can be quite affected by wire lengths. 
+Keeping wire runs as short as possible and using shielded/thicker cables will minimise signal interference and LED flicker/dim. 
+Joining the 5V and ground rails as per diagram will also help. 
+
 ### Parts
 * [3.3V to 5V Level Shift (for LEDs)](https://www.amazon.com/HiLetgo-Channels-Converter-Bi-Directional-3-3V-5V/dp/B07F7W91LC)
 * [5V 30A Power Supply](https://a.co/d/6RfqMce) - After testing, 50 LED's at full brightness use around 2A. Pick your supply to suit your needs.
 * [WS2811 - Addressable LEDs](https://www.aliexpress.com/item/1005001861198844.html) - 25cm minimum length for 20cm by 20cm grid.
 * [ESP32 Dev Board](https://www.amazon.com.au/esp32-wroom/s?k=esp32+wroom)
-* [Auto Connectors](https://www.amazon.com.au/Twippo-Waterproof-Electrical-Automotive-Connectors/dp/B092PL9W7K?source=ps-sl-shoppingads-lpcontext&ref_=fplfs&smid=A2ID4ABCEW4PWT&th=1)
+* [Auto Connectors](https://www.amazon.com.au/Twippo-Waterproof-Electrical-Automotive-Connectors/dp/B092PL9W7K)
 
 <p>
-
-
-
 
 <div align="center">
   <img src="images/pb_leds.png" alt="LED Connection" width="400px"/>
@@ -131,8 +148,5 @@ Follow the instructions on the main project page around PHP setup. Essentially:
   <br><b>Figure 13.</b> LED bulbs on the back of the wall.
 </div>
 
-
-### Contact
-[Buy me a Coffee!](https://www.buymeacoffee.com/pegor)
-<br>
-devPegor@gmail.com
+### Credit
+[Buy original dev a Coffee!](https://www.buymeacoffee.com/pegor)

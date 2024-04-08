@@ -380,10 +380,8 @@ function updateRoute($routeId, $grade)
   }
 }
 
-function getVersion()
-{
-  $command = escapeshellcmd('sudo ../custom_scripts/runRoot.sh getVersion');
-  $output = shell_exec($command);
-  echo $output;
+function getVersion() {
+  $config = require 'config.php';
+  echo $config->version;
 }
 ?>

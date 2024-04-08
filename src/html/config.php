@@ -1,6 +1,7 @@
 <?php
 
 return (object) array(
+    'version' => '2.0',
     'database' => array(
         'type' => 'sqlite',
         'connectionString' => 'sqlite:../db/database.sqlite'

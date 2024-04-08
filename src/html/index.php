@@ -9,7 +9,7 @@ $config = require 'config.php';
 
 <head>
   <title>
-    PeggyBoard
+    PeggyBoard 32
   </title>
   <link href="css/main.css?v=1" rel="stylesheet">
   <script src="jquery/jquery.min.js" type="text/javascript"></script>

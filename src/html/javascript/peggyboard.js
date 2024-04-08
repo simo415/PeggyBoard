@@ -906,7 +906,7 @@ function loadPlaylists() {
 function loadPlaylist() {
     _playlistSelectedId = $('#openPlaylistName').val();
     console.log("Loading playlist " + _playlistSelectedId);
-    var playlistId = global_Playlists[_playlistSelectedId].id;
+    var playlist = global_Playlists[_playlistSelectedId];
     openPlaylistSelection(false);
 
     var callback = function(output) {
@@ -918,7 +918,8 @@ function loadPlaylist() {
         url: _mainBackend,
         data: {
             function: 'getPlaylistClimbs',
-            parameter: playlistId
+            parameter: playlist.id,
+            parameter2: playlist.orderby;
         },
         type: 'POST',
         success: function(output) {

@@ -50,10 +50,11 @@ $config = require 'config.php';
     <div class="saveForm">
       <div class="saveForm-container">
         <p>PeggyBoard is an interactive climbing wall powered by a Raspberry Pi.</p>
-        <p>This project is open source and can be found on <a href="https://github.com/PegorK/PeggyBoard">GitHub</a>.
+        <p>Original project is open source and can be found on <a href="https://github.com/PegorK/PeggyBoard">GitHub</a>.
+        <p>Forked project is open source and can be found on <a href="https://github.com/simo415/PeggyBoard">GitHub</a>.
         </p>
         <p>Enjoy and get stronk!!</p>
-        <p>Developed by Pegor Karoglanian (devPegor@gmail.com) July 2020</p>
+        <p>Original developed by Pegor Karoglanian (devPegor@gmail.com) July 2020</p>
         <p>~Product of the Coronavirus~</p>
         <button type="submit" class="btn cancel" onclick="openAbout(false)">Close</button>
       </div>

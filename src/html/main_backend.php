@@ -23,8 +23,8 @@ if (isset($_POST['function']) && !empty($_POST['function'])) {
       saveRoute($parameter);
       break;
     case 'savePlaylist':
-        savePlaylist($parameter);
-        break;
+      savePlaylist($parameter);
+      break;
     case 'getPlaylists':
       getPlaylists();
       break;
@@ -210,7 +210,6 @@ function getPlaylists()
 }
 
 function getPlaylistClimbs($playlistId, $orderby) {
-  # TODO sort not working
   $sort = "";
   if ($orderby == 'routeName' || $orderby == 'date' || $orderby == 'grade') {
     $sort = "order by $orderby";
@@ -228,6 +227,9 @@ function getPlaylistClimbs($playlistId, $orderby) {
     while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
       $climbs[$i] = $row;
       $i++;
+    }
+    if ($orderby == 'random') {
+      shuffle($climbs);
     }
     echo json_encode($climbs);
     $db = null;

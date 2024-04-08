@@ -919,7 +919,7 @@ function loadPlaylist() {
         data: {
             function: 'getPlaylistClimbs',
             parameter: playlist.id,
-            parameter2: playlist.orderby;
+            parameter2: playlist.orderby
         },
         type: 'POST',
         success: function(output) {

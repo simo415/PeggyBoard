@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="src/html/images/Logo_text.png" alt="CoverRender" width="400px"/>
+  <img src="src/html/images/Logo_text_32.png" alt="CoverRender" width="400px"/>
 </div>
 <br>
 
@@ -134,10 +134,10 @@ Joining the 5V and ground rails as per diagram will also help.
 ### Parts
 * [3.3V to 5V Level Shift (for LEDs)](https://littlebirdelectronics.com.au/products/iic-i2c-logic-level-converter-bi-directional-module-5v-to-3-3v-for-arduino) $3aud
 * [5V 30A Power Supply](https://www.ebay.com.au/itm/112843990043) $25aud. After testing, 50 LED's at full brightness use around 2A. Pick your supply to suit your needs.
-* [WS2811 - Addressable LEDs](https://www.aliexpress.com/item/1005001861198844.html) $170aud - 25cm minimum length for 20cm by 20cm grid.
+* [WS2811 - Addressable LEDs](https://www.aliexpress.com/item/1005001861198844.html) $170aud/250 lights - 25cm minimum length for 20cm by 20cm grid.
 * [ESP32 Dev Board](https://www.amazon.com.au/esp32-wroom/s?k=esp32+wroom) $8aud
 
-Additionally, the following may also be needed if you don't have anything spare. Automotive connectors are handy, they're water proof, cheap and 
+Additionally, the following may also be needed if you don't have anything spare. Automotive connectors are handy, they're water proof, cheap and easy to install.
 * [Auto Connectors](https://www.amazon.com.au/Twippo-Waterproof-Electrical-Automotive-Connectors/dp/B092PL9W7K) $25aud - other JST connectors ok too.
 * [Twin Core Cable](https://www.amazon.com.au/Electrical-Cable-Electric-Extension-Sheath/dp/B07HK2WDSZ) $40aud - you need around 5-10 meters depending on where you install the power supply. 
 * [Header jumper cables](https://www.ebay.com.au/itm/355301522984) $4aud - female-female cables

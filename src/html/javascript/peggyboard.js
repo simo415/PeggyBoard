@@ -43,8 +43,26 @@ $.ajax({
     },
     dataType: 'json'
 });
-//let there be light.
-//initPage();
+
+// testing animations...
+var running = false;
+async function screensaver() {
+    running = true;
+    index = 1;
+    clearAll(true);
+    while (running) {
+        prev = (index - 1) % 228 == 0 ? 228 : (index - 1) % 228;
+        light_hold({hold:prev, color:"000000"});
+        light_hold({hold:index++ % 228, color:"FF0000"});
+        await sleep(50);
+    }
+}
+function stopScreensaver() {
+    running = false;
+}
+function sleep (time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+}
 
 function initPage(configuration) {
     config = configuration;
@@ -330,14 +348,12 @@ function addHold(id) {
             case "handHold":
                 type = "footHold";
                 plainText = 'Foot Hold';
-                //color = "FF0000";
                 color = config.colorFoot;
                 break;
             case "footHold":
                 if (!maxFinishingReached) {
                     type = "finishingHand";
                     plainText = 'Finishing Hold';
-                    //color = "0000FF";
                     color = config.colorFinish;
                 } else {
                     type = "none";
@@ -507,9 +523,9 @@ function saveRoute() {
             setTimeout(function() {
                 $("#saveFormStatus").hide().removeClass("saveForm-container-status-success");
                 $("#saveFormBg").hide();
-            }, 2000);
+            }, 1000);
             loadRoutes(output); //refresh list.
-        }, 2000);
+        }, 1000);
     }
 
     $.ajax({

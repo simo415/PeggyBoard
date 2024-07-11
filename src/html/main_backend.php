@@ -172,7 +172,6 @@ function clearAll()
 
   $curl = curl_init();
   // Power on required, color=000000 results in power=off
-  // TODO check if there's a tasmota setting to avoid this behaviour
   curl_setopt($curl, CURLOPT_URL, $commandPath . "?cmnd=backlog+color+000000;power+on");
   $result = curl_exec($curl);
   return $result;

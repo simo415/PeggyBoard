@@ -1,5 +1,5 @@
 import { global_Climbs, setGlobalClimbs, _mainBackend } from "./variables.js";
-import { generateListOfClimbs } from "./ui.js";
+import { generateListOfClimbs, setScreenSize } from "./ui.js";
 import { getRoutes } from "./route.js";
 import { updatePlaylistInfobar } from "./playlist.js";
 
@@ -56,6 +56,7 @@ function togglePlaylistMode (playlistMode) {
         document.getElementById("nextIcn").style.display = "inline-block";
         document.getElementById("stopIcn").style.display = "inline-block";
         updatePlaylistInfobar(true);
+        setScreenSize();
     } else {
         document.getElementById("loadIcn").style.display = "inline-block";
         document.getElementById("saveIcn").style.display = "inline-block";
@@ -64,6 +65,7 @@ function togglePlaylistMode (playlistMode) {
         document.getElementById("nextIcn").style.display = "none";
         document.getElementById("stopIcn").style.display = "none";
         updatePlaylistInfobar(false);
+        setScreenSize();
     }
 }
 

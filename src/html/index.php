@@ -49,7 +49,7 @@ $config = require 'config.php';
   <div id="aboutPage" class="saveFormBg">
     <div class="saveForm">
       <div class="saveForm-container">
-        <p>PeggyBoard is an interactive climbing wall powered by a Raspberry Pi.</p>
+        <p>PeggyBoard32 is an interactive climbing wall powered by ESP32 devices</p>
         <p>Original project is open source and can be found on <a href="https://github.com/PegorK/PeggyBoard">GitHub</a>.
         <p>Forked project is open source and can be found on <a href="https://github.com/simo415/PeggyBoard">GitHub</a>.
         </p>
@@ -169,4 +169,4 @@ $config = require 'config.php';
 </body>
 
 </html>
-<script src="javascript/peggyboard.js?v=1" type="text/javascript"></script>
+<script src="javascript/peggyboard.js?v=1" type="module"></script>

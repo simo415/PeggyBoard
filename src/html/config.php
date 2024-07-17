@@ -36,7 +36,9 @@ return (object) array(
         'colorFinish' => 'FF0000',
         'colorStart' => '00FF00',
         'minGrade' => 0,
-        'maxGrade' => 15
+        'maxGrade' => 15,
+        'maxStartHolds' => 2,
+        'maxFinishHolds' => 2
     )
 );
 

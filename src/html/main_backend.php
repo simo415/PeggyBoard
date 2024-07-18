@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 // Call function depending on what frontend wants.
 if (isset($_POST['function']) && !empty($_POST['function'])) {
   $function = $_POST['function'];
@@ -48,6 +50,15 @@ if (isset($_POST['function']) && !empty($_POST['function'])) {
       break;
     case 'getFrontendConfig':
       getFrontendConfig();
+      break;
+    case 'createSession':
+      createSession();
+      break;
+    case 'addSessionTick':
+      addSessionTick($parameter);
+      break;
+    case 'updateSession':
+      updateSession($parameter);
       break;
   }
 }
@@ -157,6 +168,7 @@ function mapColor($color,  $colorMap) {
 // Tasmota appears to interpret colors as GRB by default, option37 to reconfigure...
 // Appears that tasmota 'led' command doesnt obey option37 24
 // Rewrite RGB value to GRB...
+// TODO: Look to refactor, perhaps just lookup correct backend colour from config
 function rgbToGrb($color)
 {
   $red = substr($color, 0, 2);
@@ -292,9 +304,95 @@ function openDatabase()
         "date" datetime DEFAULT CURRENT_TIMESTAMP,
         "orderby" varchar NOT NULL
     )');
+    $db->exec('
+    CREATE TABLE IF NOT EXISTS "session" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "userSessionId" varchar NOT NULL,
+        "startTime" datetime DEFAULT CURRENT_TIMESTAMP,
+        "endTime" datetime,
+        "personName" varchar,
+        "comments" varchar
+    )');
+    $db->exec('
+    CREATE TABLE IF NOT EXISTS "tick" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "sessionId" INTEGER NOT NULL,
+        "dateTime" datetime DEFAULT CURRENT_TIMESTAMP,
+        "tick" INTEGER NOT NULL,
+        "routeId" INTEGER NOT NULL
+    )');
   }
 
   return $db;
+}
+
+function createSession() {
+
+  if ($_SESSION["sessionId"]) {
+    echo $_SESSION["sessionId"];
+    return;
+  }
+
+  $sql = "INSERT INTO session (userSessionId) VALUES ('". session_id() . "')";
+  $db = openDatabase();
+  if ($db != 0) {
+    if ($db->exec($sql) != 0) { // TODO: Return DB error
+      $_SESSION["sessionId"] = $db->lastInsertId();
+      echo json_encode($_SESSION["sessionId"]);
+    } else {
+      echo json_encode(-1);
+    }
+    $db = null;
+  }
+}
+
+function updateSession($options) {
+
+  if (!$_SESSION["sessionId"]) {
+    echo json_encode(-1);
+    return;
+  }
+
+  $sql = "UPDATE session SET personName='".$options["personName"].
+     "', comments='".$options["comments"].
+     "', endTime='".$options["endTime"].
+     "' where id='".$_SESSION["sessionId"]."'";
+
+  $db = openDatabase();
+  if ($db != 0) {
+    if ($db->exec($sql) != 0) { // TODO: Return DB error
+      if (!$options["endTime"]) {
+        echo json_encode($_SESSION["sessionId"]);
+      } else {
+        session_unset();
+        session_destroy();
+        echo json_encode($_SESSION["sessionId"]);
+      }
+    } else {
+      echo json_encode(-1);
+    }
+    $db = null;
+  }
+}
+
+function addSessionTick($options) {
+
+  if (!$_SESSION["sessionId"]) {
+    echo json_encode(-1);
+    return;
+  }
+
+  $sql = "INSERT INTO tick (sessionId, tick, routeId) VALUES ('". $_SESSION["sessionId"] . "','" . $options["tick"] . "','" . $options["routeId"] . "')";
+  // send the sql request
+  $db = openDatabase();
+  if ($db != 0) {
+    if ($db->exec($sql) != 0) { // TODO: Return DB error
+      echo json_encode($db->lastInsertId());
+    } else {
+      echo json_encode(-1);
+    }
+    $db = null;
+  }
 }
 
 function getRoutes($sortType = "GRADE", $sortOrd = "ASC")

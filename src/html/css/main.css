@@ -194,6 +194,52 @@ html, body {
   background-image: url('/images/regrade_icn_active.png');
 }
 
+.sessionTickLoading {
+  display: none;
+  vertical-align: middle;
+  width: 25px;
+  height: 25px;
+  margin:0 auto;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.sessionTickIcn {
+  display: inline-block;
+  vertical-align: middle;
+  width: 25px;
+  height: 25px;
+  background-image: url('/images/success_icn.png');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin:0 auto;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.sessionTickIcn:active {
+  border: 5px solid green;
+}
+
+.sessionAttemptIcn {
+  display: inline-block;
+  vertical-align: middle;
+  width: 25px;
+  height: 25px;
+  background-image: url('/images/err_icn.png');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin:0 auto;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.sessionAttemptIcn:active {
+  border: 5px solid red;
+}
+
 .lightIcn {
   display: inline-block;
   vertical-align: middle;

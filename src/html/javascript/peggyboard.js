@@ -24,6 +24,7 @@ import {
     getVersion,
 } from "./util.js";
 import { savePlaylist, loadPlaylist, loadPlaylists, nextClimb, previousClimb } from "./playlist.js";
+import { addSessionTick, startSession, endSession } from "./session.js";
 
 var config = {};
 
@@ -165,4 +166,21 @@ window.togglePlaylistMode = function togglePlaylistModeMenu () {
 // About Features
 window.openAbout = function openAboutDialog (show) {
     openAbout(show);
+};
+
+// Session Features
+window.sessionTick = function sessionTick () {
+    addSessionTick(true);
+};
+
+window.sessionAttempt = function sessionAttempt () {
+    addSessionTick(false);
+};
+
+window.sessionStart = function sessionStart () {
+    startSession();
+};
+
+window.sessionStop = function sessionStop () {
+    endSession();
 };

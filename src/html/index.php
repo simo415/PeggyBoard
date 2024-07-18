@@ -50,11 +50,12 @@ $config = require 'config.php';
     <div class="saveForm">
       <div class="saveForm-container">
         <p>PeggyBoard32 is an interactive climbing wall powered by ESP32 devices</p>
-        <p>Original project is open source and can be found on <a href="https://github.com/PegorK/PeggyBoard">GitHub</a>.
+        <p>Original project is open source and can be found on <a
+            href="https://github.com/PegorK/PeggyBoard">GitHub</a>.
         <p>Forked project is open source and can be found on <a href="https://github.com/simo415/PeggyBoard">GitHub</a>.
         </p>
         <p>Enjoy and get stronk!!</p>
-        <p>Original developed by Pegor Karoglanian (devPegor@gmail.com) July 2020</p>
+        <p>PeggyBoard developed by Pegor Karoglanian (devPegor@gmail.com) July 2020</p>
         <p>~Product of the Coronavirus~</p>
         <button type="submit" class="btn cancel" onclick="openAbout(false)">Close</button>
       </div>
@@ -114,12 +115,18 @@ $config = require 'config.php';
       </div>
     </div>
   </div>
+  <div id="loadingScreen" class="saveFormBg">
+    <div class="saveForm">
+      <div class="saveForm-container saveForm-container-status-loading" style="height:100vh"></div>
+    </div>
+  </div>
   <div id="mainScreen">
     <div class="headerArea">
       <div class="logoText"></div>
     </div>
     <div id="interactionArea" class="wallLayoutArea">
       <div class="nameArea">
+        <span id="sessionInfo" style="display:none">Tick/Attempt: <a id="sessionTick" class="sessionTickIcn" onclick="sessionTick()"></a><img id="sessionTickLoading" class="sessionTickLoading" src="/images/loading_icn.gif"/> <a id="sessionAttempt" class="sessionAttemptIcn" onclick="sessionAttempt()"></a></span>
         <span id="selectedPlaylistInfo" style="display:block"></span>
         <!-- only visible if a saved route is selected -->
         <span id="selectedRouteName"></span>
@@ -151,6 +158,8 @@ $config = require 'config.php';
           <span id="menuButton" class="menuIcn" title="Menu" onclick="toggleMenuSelection()"></span>
           <div id="menuItems" class="dropup-content">
             <a class="menuItem" onclick="openAbout(true)">About</a>
+            <a id="sessionStartMenu" class="menuItem" onclick="sessionStart()">Start Session</a>
+            <a id="sessionStopMenu" style="display:none" class="menuItem" onclick="sessionStop()">Stop Session</a>
             <a class="menuItem" onclick="openPlaylistCreation(true)">Create Playlist</a>
             <a class="menuItem" onclick="openPlaylistSelection(true)">Open Playlist</a>
           </div>

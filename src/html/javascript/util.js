@@ -10,10 +10,12 @@ function toggleLoadSelection () {
         $("#tableOfClimbs").hide();
         $("#interactionArea").show();
         $("#loadIcn").removeClass("loadActive");
+        setScreenSize();
     } else {
         $("#interactionArea").hide();
         $("#tableOfClimbs").show();
         $("#loadIcn").addClass("loadActive");
+        setScreenSize();
     }
 }
 

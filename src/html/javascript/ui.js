@@ -327,12 +327,18 @@ function buildSessionSummary(session) {
     var sessionDuration = (endTime - startTime) / 1000;
     if (sessionDuration < 60) {
         $("#sessionSummaryContent").append("<div><b>Session Duration:</b> " + sessionDuration + " seconds</div>");
+    } else if (sessionDuration < 120) {
+        $("#sessionSummaryContent").append("<div><b>Session Duration:</b> " + Math.floor(sessionDuration / 60) + " minute</div>");
     } else {
         $("#sessionSummaryContent").append("<div><b>Session Duration:</b> " + Math.floor(sessionDuration / 60) + " minutes</div>");
     }
+    //var total = (session.tickCount + session.attemptCount);
+    $("#sessionSummaryContent").append("<div><b>Number of ticks:</b> " + session.tickCount + "</div>");
+    $("#sessionSummaryContent").append("<div><b>Number of attempts:</b> " + session.attemptCount + "</div>");
+    //$("#sessionSummaryContent").append("<div><b>Total Number:</b> " + total + "</div>");
 
     if (session.ticks) {
-        var content = '<table style="margin-top:10px; text-align:center; width:100%">';  
+        var content = '<table style="margin:10px; text-align:center; width:100%">';  
         content += '<tr style="font-weight:bold">';
         content += "<td>Grade</td><td>Ticks</td><td>Attempts</td>";
         content += "</tr>";

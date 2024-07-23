@@ -423,7 +423,10 @@ function getSessionStats($sessionId) {
     }
 
     $sql = "SELECT id, userSessionId, datetime(startTime, 'localtime') as startTime, 
-              datetime(endTime, 'localtime') as endTime, personName, comments from session
+              datetime(endTime, 'localtime') as endTime, personName, comments,
+              (select count(*) from tick where sessionId = $sessionId and tick = 'true') as tickCount,
+              (select count(*) from tick where sessionId = $sessionId and tick = 'false') as attemptCount
+               from session
             WHERE id = $sessionId
             ";
     $res = $db->query($sql);

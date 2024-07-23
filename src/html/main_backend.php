@@ -60,6 +60,9 @@ if (isset($_POST['function']) && !empty($_POST['function'])) {
     case 'updateSession':
       updateSession($parameter);
       break;
+    case 'getSessionStats':
+      getSessionStats($parameter);
+      break;
   }
 }
 
@@ -317,7 +320,8 @@ function openDatabase()
     CREATE TABLE IF NOT EXISTS "tick" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "sessionId" INTEGER NOT NULL,
-        "dateTime" datetime DEFAULT CURRENT_TIMESTAMP,
+        "startTime" datetime,
+        "endTime" datetime DEFAULT CURRENT_TIMESTAMP,
         "tick" INTEGER NOT NULL,
         "routeId" INTEGER NOT NULL
     )');
@@ -395,8 +399,47 @@ function addSessionTick($options) {
   }
 }
 
-function getRoutes($sortType = "GRADE", $sortOrd = "ASC")
-{
+function getSessionStats($sessionId) {
+  // routes by grade
+  // sessionTimes and duration
+  // select * from tick 
+  // inner join route r on r.id = t.routeId
+  // where sessionId = $options.sessionId
+
+  $db = openDatabase();
+  if ($db != 0) {
+    $i = 0;
+    $sql = "SELECT r.grade, t.tick, count(*) as quantity
+            from tick t
+            inner join routes r on r.id = t.routeId
+            where t.sessionId = $sessionId
+            group by r.grade, t.tick
+            order by r.grade, t.tick desc
+            ";
+    $res = $db->query($sql);
+    while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
+      $ticks[$i] = $row;
+      $i++;
+    }
+
+    $sql = "SELECT id, userSessionId, datetime(startTime, 'localtime') as startTime, 
+              datetime(endTime, 'localtime') as endTime, personName, comments from session
+            WHERE id = $sessionId
+            ";
+    $res = $db->query($sql);
+    while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
+      $session = $row;
+    }
+    $session["ticks"] = $ticks;
+    
+    echo json_encode($session);
+    $db = null;
+  } else {
+    echo ("Error: Could not retrieve stats from session");
+  }
+}
+
+function getRoutes($sortType = "GRADE", $sortOrd = "ASC") {
   switch ($sortType) {
     case "NAME":
       $sortType = "routename";

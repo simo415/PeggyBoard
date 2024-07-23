@@ -1,4 +1,5 @@
 import { _mainBackend, global_Climbs, _selectedIndex } from "./variables.js";
+import { buildSessionSummary } from "./ui.js";
 
 var _sessionId = -1;
 
@@ -30,7 +31,7 @@ function addSessionTick (tick) {
             $("#sessionTick").show();
             $("#sessionAttempt").show();
             $("#sessionTickLoading").hide();
-        }, 2000);
+        }, 500);
     };
 
     $.ajax({
@@ -64,7 +65,7 @@ function startSession () {
             $("#sessionStopMenu").show();
             $("#loadingScreen").hide();
             $("#sessionInfo").show();
-        }, 1000);
+        }, 500);
     };
 
     $("#loadingScreen").show();
@@ -95,12 +96,13 @@ function endSession () {
     var options = {
         sessionId: _sessionId,
         endTime: new Date().toISOString(),
-        personName: "test person",
-        comments: "test",
+        personName: $("#climberName").val(),
+        comments: $("#sessionComments").val(),
     };
 
     var callback = function (output) {
         _sessionId = -1;
+        buildSessionSummary(output);
         console.log("Session stopped");
         setTimeout(() => {
             $("#menuItems").hide();
@@ -108,8 +110,27 @@ function endSession () {
             $("#sessionStopMenu").hide();
             $("#loadingScreen").hide();
             $("#sessionInfo").hide();
-        }, 1000);
+            $("#stopSession").hide();
+            $("#sessionSummary").show();
+        }, 500);
     };
+
+    var sessionStats = function (output) {
+        $.ajax({
+            url: _mainBackend,
+            data: {
+                function: "getSessionStats",
+                parameter: _sessionId,
+            },
+            type: "POST",
+            success: function (output) {
+                if (typeof callback != "undefined") {
+                    callback(output);
+                }
+            },
+            dataType: "json",
+        });
+    }
 
     $.ajax({
         url: _mainBackend,
@@ -120,7 +141,7 @@ function endSession () {
         type: "POST",
         success: function (output) {
             if (typeof callback != "undefined") {
-                callback(output);
+                sessionStats(output);
             }
         },
         dataType: "json",

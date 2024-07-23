@@ -310,4 +310,53 @@ function generateListOfClimbs (DATA) {
     console.log("Done loading climbs.");
 }
 
-export { setScreenSize, generateGridOffsetWallLayout, generateGridWallLayout, generateListOfClimbs };
+function isoDateToBasic(date) {
+    var string = date.toISOString();
+    string = string.substring(0,19);
+    string = string.replace("T"," ");
+    return string;
+}
+
+function buildSessionSummary(session) {
+    $("#sessionSummaryContent").empty();
+    $("#sessionSummaryContent").append("<h1>Session " + session.id + "</h1>");
+    var startTime = new Date(session.startTime);
+    $("#sessionSummaryContent").append("<div><b>Start Time:</b> " + isoDateToBasic(startTime) + "</div>");
+    var endTime = new Date(session.endTime);
+    $("#sessionSummaryContent").append("<div><b>End Time:</b> " + isoDateToBasic(endTime) + "</div>");
+    var sessionDuration = (endTime - startTime) / 1000;
+    if (sessionDuration < 60) {
+        $("#sessionSummaryContent").append("<div><b>Session Duration:</b> " + sessionDuration + " seconds</div>");
+    } else {
+        $("#sessionSummaryContent").append("<div><b>Session Duration:</b> " + Math.floor(sessionDuration / 60) + " minutes</div>");
+    }
+
+    if (session.ticks) {
+        var content = '<table style="margin-top:10px; text-align:center; width:100%">';  
+        content += '<tr style="font-weight:bold">';
+        content += "<td>Grade</td><td>Ticks</td><td>Attempts</td>";
+        content += "</tr>";
+        content += "<tbody>";
+        for (let y = 0; y < session.ticks.length; y++) {
+            content += "<tr>";
+            content += "<td>V" + session.ticks[y].grade + "</td>";
+            if (session.ticks[y].tick == "true") {
+                content += "<td>" + session.ticks[y].quantity + "</td>";
+                if (y + 1 < session.ticks.length && session.ticks[y].grade == session.ticks[y + 1].grade) {
+                    content += "<td>" + session.ticks[y + 1].quantity + "</td>";
+                    y++;
+                } else {
+                    content += "<td>0</td>";
+                }
+            } else {
+                content += "<td>0</td><td>" + session.ticks[y].quantity + "</td>";
+            }
+            content += "</tr>";
+        }
+        content += "</tbody>";
+        content += "</table>";
+        $("#sessionSummaryContent").append(content);
+    }
+}
+
+export { setScreenSize, generateGridOffsetWallLayout, generateGridWallLayout, generateListOfClimbs, buildSessionSummary };

@@ -115,6 +115,31 @@ $config = require 'config.php';
       </div>
     </div>
   </div>
+  <div id="sessionSummary" class="saveFormBg">
+    <div class="saveForm">
+      <div class="saveForm-container">
+        <div id="sessionSummaryContent"></div>
+        <button type="submit" class="btn cancel" onclick="sessionSummaryDialog(false)">Close</button>
+      </div>
+      
+    </div>
+  </div>
+  <div id="stopSession" class="saveFormBg">
+    <div class="saveForm">
+      <div class="saveForm-container">
+        <h1 style="text-align:center">End Session</h1>
+
+        <label for="climberNameLabel"><b>Climber</b></label>
+        <input type="text" id="climberName" placeholder="Enter Name" name="climberName" />
+
+        <label for="sessionCommentsLabel"><b>Session Comments</b></label>
+        <textarea id="sessionComments" name="sessionComments" rows="5" cols="35"></textarea>
+
+        <button type="submit" class="btn" onclick="sessionStop()">End Session</button>
+        <button type="submit" class="btn cancel" onclick="endSessionDialog(false)">Close</button>
+      </div>
+    </div>
+  </div>
   <div id="loadingScreen" class="saveFormBg">
     <div class="saveForm">
       <div class="saveForm-container saveForm-container-status-loading" style="height:100vh"></div>
@@ -159,7 +184,7 @@ $config = require 'config.php';
           <div id="menuItems" class="dropup-content">
             <a class="menuItem" onclick="openAbout(true)">About</a>
             <a id="sessionStartMenu" class="menuItem" onclick="sessionStart()">Start Session</a>
-            <a id="sessionStopMenu" style="display:none" class="menuItem" onclick="sessionStop()">Stop Session</a>
+            <a id="sessionStopMenu" style="display:none" class="menuItem" onclick="endSessionDialog(true)">End Session</a>
             <a class="menuItem" onclick="openPlaylistCreation(true)">Create Playlist</a>
             <a class="menuItem" onclick="openPlaylistSelection(true)">Open Playlist</a>
           </div>

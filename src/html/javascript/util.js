@@ -95,6 +95,22 @@ function openAbout (show) {
     }
 }
 
+function endSessionDialog(show) {
+    if (show) {
+        $("#stopSession").show();
+    } else {
+        $("#stopSession").hide();
+    }
+}
+
+function sessionSummaryDialog(show) {
+    if (show) {
+        $("#sessionSummary").show();
+    } else {
+        $("#sessionSummary").hide();
+    }
+}
+
 function searchForRoute () {
     var key = $("#searchBar").val();
     //clear current results
@@ -197,4 +213,6 @@ export {
     openPlaylistSelection,
     openAbout,
     getVersion,
+    endSessionDialog,
+    sessionSummaryDialog,
 };

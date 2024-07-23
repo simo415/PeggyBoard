@@ -20,6 +20,8 @@ import {
     loadSwipeRoute,
     openPlaylistSelection,
     openPlaylistCreation,
+    endSessionDialog,
+    sessionSummaryDialog,
     openAbout,
     getVersion,
 } from "./util.js";
@@ -184,3 +186,11 @@ window.sessionStart = function sessionStart () {
 window.sessionStop = function sessionStop () {
     endSession();
 };
+
+window.endSessionDialog = function endSessionDialogShow(show) {
+    endSessionDialog(show);
+}
+
+window.sessionSummaryDialog = function sessionSummaryDialogShow(show) {
+    sessionSummaryDialog(show);
+}

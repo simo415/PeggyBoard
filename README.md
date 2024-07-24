@@ -8,12 +8,14 @@
 </div>
 <br>
 
-This is a fork of https://github.com/PegorK/PeggyBoard. I ran the original project as-is and had to modify it for my setup for a grid board layout, subsequently found it tricky to get the initial setup on the Raspberry Pi working. After setup I wired my Raspberry Pi with screen to a ~4 meter extension cable so I could see the wall while setting. Eventually switched to just using my phone and not the touchscreen at all. This then gave me the idea of just using a cheap ESP32 device for LED controller and my already running home NAS for the Web Application runtime. This has been running great for the last few months, it's now provided publicly if anyone else has similar needs.  
+This is a fork of https://github.com/PegorK/PeggyBoard. I ran the original project with basic modifications for a different board layout. After setup I wired my Raspberry Pi with screen to a ~4 meter extension cable so I could see the wall while setting. Eventually switched to just using my phone connected to the Raspberry Pi and not the touchscreen at all. This then gave me the idea of just using a cheap ESP32 device for LED controller and my already running home NAS for the Web Application backend. 
+
+This has been running great for the last few months, it's now provided publicly if anyone else has similar needs.  
 
 There are some key differences between this fork and original:
-- Uses an ESP32 development board with Tasmota as an LED controller. 
-- The WepApp connects to the ESP32 and controls the lights using web requests
-- The WebApp is intended to be run off a server in your local network (eg: Synology NAS/Raspberry Pi)
+- Uses an ESP32 development board with [Tasmota](https://tasmota.github.io/docs/) as an LED controller. 
+- The WepApp connects to the ESP32 and controls the lights using [web requests](https://tasmota.github.io/docs/Commands/#with-web-requests)
+- The WebApp is intended to be run off a server in your local network (eg: NAS/Raspberry Pi)
 - The WebApp is primarily accessed remotely using a phone
 
 ## Features
@@ -63,10 +65,11 @@ There are several different features available from the fork.
 
 ## Route Creation
 - Route name generator allows quickly picking a route name
+- You can specify your own lists of base names for generation by changing the reference files
 - Author name is defaulted from configuration, no need to specify every time
 
 ## Board Layout
-- Different board layouts available, grid (moonboard style) and zigzag
+- Different board layouts available, grid (moonboard style) and zigzag (original Peggyboard implementation)
 - Configurable size grid layout added for grid layout
 - LED's light up when individually modified, making route setting more intuitive
 - Existing routes can be regraded with the dropdown next to route name
@@ -77,15 +80,40 @@ There are several different features available from the fork.
 - When opening a playlist the default buttons change, providing a previous, next and stop button
 - The title of the route shows the position in the playlist (See figure 6)
 
-## Sessions
-- Start a session and track all of the ticks and attempts you have during your climbing session.
-- Records session start time, finish time, duration and all the climbs attempted.
-- Able to switch between playlists and specific routes to track everything
-- Session summary available to view during session and provided at the end of the session. 
-
 <div align="center">
   <img src="images/pb_playlist.png" alt="PeggyBoard Playlist" width="400px"/>
   <br><b>Figure 6.</b> Using a playlist.
+</div>
+
+## Sessions
+- Start a session and track all of the ticks and attempts you have during your climbing session.
+- Records session start time, finish time, duration and all the climbs attempted.
+- Able to switch between playlists and specific routes to track everything.
+- Session summary available to view during session and provided at the end of the session. 
+
+<div align="center">
+    <table>
+        <tr>
+            <td>
+                <div align="center">
+                    <img src="images/pb_session.png" alt="PeggyBoard Session Menus" width="300"/>
+                    <br><b>Figure 7.</b> Session menus
+                </div>
+            </td>
+            <td>
+                <div align="center">
+                    <img src="images/pb_session2.png" alt="PeggyBoard Ending a Session" width="300"/>
+                    <br><b>Figure 8.</b> Ending a session dialog
+                </div>
+            </td>
+            <td>
+                <div align="center">
+                    <img src="images/pb_session3.png" alt="PeggyBoard Session Summary" width="300"/>
+                    <br><b>Figure 9.</b> Session summary
+                </div>
+            </td>
+        </tr>
+    </table>
 </div>
 
 ## Database
@@ -108,14 +136,15 @@ flowchart TD;
     B --> C[Database];
     B --> D[LED Controller];
     B --> E[config.php];
-    F --> B[main_backend.php];
+    F --> H[javascript/xxx.js];
+    H --> B[main_backend.php];
 ```
 * All configuration available in config.php
 * Database: no dependency on MySql, simply update the database connection string in config.php, sqlite is simple - database and schemas auto-created. 
 * LED Controller: relies on Tasmota, specify the endpoint in config.php
 
 ## LED controller - Tasmota
-- Flash your ESP device (Espressif ESP8266, ESP32, ESP32-S or ESP32-C3 dev boards) with the latest version of Tasmota
+- Flash your ESP device (Espressif ESP8266, ESP32, ESP32-S, ESP32-C3, etc.. dev boards) with the latest version of Tasmota
 - Configure the device to connect to your local Wifi
 - Setup the device with a GPIO pin as WS8212 type 1, I used GPIO13
 - Assign a static IP or hostname to device
@@ -141,10 +170,10 @@ Joining the 5V and ground rails as per diagram will also help.
 * [3.3V to 5V Level Shift (for LEDs)](https://littlebirdelectronics.com.au/products/iic-i2c-logic-level-converter-bi-directional-module-5v-to-3-3v-for-arduino) $3aud
 * [5V 30A Power Supply](https://www.ebay.com.au/itm/112843990043) $25aud. After testing, 50 LED's at full brightness use around 2A. Pick your supply to suit your needs.
 * [WS2811 - Addressable LEDs](https://www.aliexpress.com/item/1005001861198844.html) $170aud/250 lights - 25cm minimum length for 20cm by 20cm grid.
-* [ESP32 Dev Board](https://www.amazon.com.au/esp32-wroom/s?k=esp32+wroom) $8aud
+* [ESP32 Dev Board](https://www.amazon.com.au/DIGISHUO-ESP8266-NodeMCU-Development-Micropython/dp/B0966LHM29) $8aud
 
 Additionally, the following may also be needed if you don't have anything spare. Automotive connectors are handy, they're water proof, cheap and easy to install.
-* [Auto Connectors](https://www.amazon.com.au/Twippo-Waterproof-Electrical-Automotive-Connectors/dp/B092PL9W7K) $25aud - other JST connectors ok too.
+* [Auto Connectors](https://www.amazon.com.au/Twippo-Waterproof-Electrical-Automotive-Connectors/dp/B092PL9W7K) $25aud - other JST connectors fine too.
 * [Twin Core Cable](https://www.amazon.com.au/Electrical-Cable-Electric-Extension-Sheath/dp/B07HK2WDSZ) $40aud - you need around 5-10 meters depending on where you install the power supply. 
 * [Header jumper cables](https://www.ebay.com.au/itm/355301522984) $4aud - female-female cables
 * Project box to house it in could be useful. 

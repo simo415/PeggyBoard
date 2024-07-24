@@ -121,7 +121,6 @@ $config = require 'config.php';
         <div id="sessionSummaryContent"></div>
         <button type="submit" class="btn cancel" onclick="sessionSummaryDialog(false)">Close</button>
       </div>
-      
     </div>
   </div>
   <div id="stopSession" class="saveFormBg">
@@ -184,6 +183,7 @@ $config = require 'config.php';
           <div id="menuItems" class="dropup-content">
             <a class="menuItem" onclick="openAbout(true)">About</a>
             <a id="sessionStartMenu" class="menuItem" onclick="sessionStart()">Start Session</a>
+            <a id="sessionSummaryMenu" style="display:none" class="menuItem" onclick="sessionSummaryDialog(true)">Session Summary</a>
             <a id="sessionStopMenu" style="display:none" class="menuItem" onclick="endSessionDialog(true)">End Session</a>
             <a class="menuItem" onclick="openPlaylistCreation(true)">Create Playlist</a>
             <a class="menuItem" onclick="openPlaylistSelection(true)">Open Playlist</a>

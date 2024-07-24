@@ -2,6 +2,7 @@ import { global_Climbs, setGlobalClimbs, _mainBackend } from "./variables.js";
 import { generateListOfClimbs, setScreenSize } from "./ui.js";
 import { getRoutes } from "./route.js";
 import { updatePlaylistInfobar } from "./playlist.js";
+import { refreshSessionStats } from "./session.js";
 
 var _sortOrder = 1;
 
@@ -105,7 +106,10 @@ function endSessionDialog(show) {
 
 function sessionSummaryDialog(show) {
     if (show) {
-        $("#sessionSummary").show();
+        var show = function (output) {
+            $("#sessionSummary").show();
+        };
+        refreshSessionStats(show);
     } else {
         $("#sessionSummary").hide();
     }

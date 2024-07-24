@@ -77,6 +77,12 @@ There are several different features available from the fork.
 - When opening a playlist the default buttons change, providing a previous, next and stop button
 - The title of the route shows the position in the playlist (See figure 6)
 
+## Sessions
+- Start a session and track all of the ticks and attempts you have during your climbing session.
+- Records session start time, finish time, duration and all the climbs attempted.
+- Able to switch between playlists and specific routes to track everything
+- Session summary available to view during session and provided at the end of the session. 
+
 <div align="center">
   <img src="images/pb_playlist.png" alt="PeggyBoard Playlist" width="400px"/>
   <br><b>Figure 6.</b> Using a playlist.

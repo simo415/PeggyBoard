@@ -63,6 +63,7 @@ function startSession () {
             $("#menuItems").hide();
             $("#sessionStartMenu").hide();
             $("#sessionStopMenu").show();
+            $("#sessionSummaryMenu").show();
             $("#loadingScreen").hide();
             $("#sessionInfo").show();
         }, 500);
@@ -102,35 +103,18 @@ function endSession () {
 
     var callback = function (output) {
         _sessionId = -1;
-        buildSessionSummary(output);
         console.log("Session stopped");
         setTimeout(() => {
             $("#menuItems").hide();
             $("#sessionStartMenu").show();
             $("#sessionStopMenu").hide();
+            $("#sessionSummaryMenu").hide();
             $("#loadingScreen").hide();
             $("#sessionInfo").hide();
             $("#stopSession").hide();
             $("#sessionSummary").show();
         }, 500);
     };
-
-    var sessionStats = function (output) {
-        $.ajax({
-            url: _mainBackend,
-            data: {
-                function: "getSessionStats",
-                parameter: _sessionId,
-            },
-            type: "POST",
-            success: function (output) {
-                if (typeof callback != "undefined") {
-                    callback(output);
-                }
-            },
-            dataType: "json",
-        });
-    }
 
     $.ajax({
         url: _mainBackend,
@@ -140,12 +124,28 @@ function endSession () {
         },
         type: "POST",
         success: function (output) {
+            refreshSessionStats(callback);
+        },
+        dataType: "json",
+    });
+}
+
+function refreshSessionStats(callback) {
+    $.ajax({
+        url: _mainBackend,
+        data: {
+            function: "getSessionStats",
+            parameter: _sessionId,
+        },
+        type: "POST",
+        success: function (output) {
+            buildSessionSummary(output);
             if (typeof callback != "undefined") {
-                sessionStats(output);
+                callback(output);
             }
         },
         dataType: "json",
     });
 }
 
-export { addSessionTick, startSession, endSession };
+export { addSessionTick, startSession, endSession, refreshSessionStats };

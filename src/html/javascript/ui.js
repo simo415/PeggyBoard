@@ -310,27 +310,36 @@ function generateListOfClimbs (DATA) {
     console.log("Done loading climbs.");
 }
 
-function isoDateToBasic(date) {
+function isoDateToBasic (date) {
     var string = date.toISOString();
-    string = string.substring(0,19);
-    string = string.replace("T"," ");
+    string = string.substring(0, 19);
+    string = string.replace("T", " ");
     return string;
 }
 
-function buildSessionSummary(session) {
+function buildSessionSummary (session) {
     $("#sessionSummaryContent").empty();
     $("#sessionSummaryContent").append("<h1>Session " + session.id + "</h1>");
     var startTime = new Date(session.startTime);
     $("#sessionSummaryContent").append("<div><b>Start Time:</b> " + isoDateToBasic(startTime) + "</div>");
     var endTime = new Date(session.endTime);
-    $("#sessionSummaryContent").append("<div><b>End Time:</b> " + isoDateToBasic(endTime) + "</div>");
+    if (session.endTime) {
+        $("#sessionSummaryContent").append("<div><b>End Time:</b> " + isoDateToBasic(endTime) + "</div>");
+    } else {
+        $("#sessionSummaryContent").append("<div><b>End Time:</b> Still Climbing!</div>");
+        endTime = new Date();
+    }
     var sessionDuration = (endTime - startTime) / 1000;
     if (sessionDuration < 60) {
         $("#sessionSummaryContent").append("<div><b>Session Duration:</b> " + sessionDuration + " seconds</div>");
     } else if (sessionDuration < 120) {
-        $("#sessionSummaryContent").append("<div><b>Session Duration:</b> " + Math.floor(sessionDuration / 60) + " minute</div>");
+        $("#sessionSummaryContent").append(
+            "<div><b>Session Duration:</b> " + Math.floor(sessionDuration / 60) + " minute</div>"
+        );
     } else {
-        $("#sessionSummaryContent").append("<div><b>Session Duration:</b> " + Math.floor(sessionDuration / 60) + " minutes</div>");
+        $("#sessionSummaryContent").append(
+            "<div><b>Session Duration:</b> " + Math.floor(sessionDuration / 60) + " minutes</div>"
+        );
     }
     //var total = (session.tickCount + session.attemptCount);
     $("#sessionSummaryContent").append("<div><b>Number of ticks:</b> " + session.tickCount + "</div>");
@@ -338,7 +347,7 @@ function buildSessionSummary(session) {
     //$("#sessionSummaryContent").append("<div><b>Total Number:</b> " + total + "</div>");
 
     if (session.ticks) {
-        var content = '<table style="margin:10px; text-align:center; width:100%">';  
+        var content = '<table style="margin:10px; text-align:center; width:100%">';
         content += '<tr style="font-weight:bold">';
         content += "<td>Grade</td><td>Ticks</td><td>Attempts</td>";
         content += "</tr>";
@@ -365,4 +374,10 @@ function buildSessionSummary(session) {
     }
 }
 
-export { setScreenSize, generateGridOffsetWallLayout, generateGridWallLayout, generateListOfClimbs, buildSessionSummary };
+export {
+    setScreenSize,
+    generateGridOffsetWallLayout,
+    generateGridWallLayout,
+    generateListOfClimbs,
+    buildSessionSummary,
+};

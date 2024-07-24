@@ -89,7 +89,8 @@ html, body {
   display: none;
   position: absolute;
   background-color: #f1f1f1;
-  min-width: 125px;
+  border: 1px solid brown;
+  min-width: 150px;
   font-size: 14px;
   bottom: 35px;
   left: 5px;
@@ -119,6 +120,15 @@ html, body {
 
 .menuIcn:active {
   background-image: url('/images/menu_icn_active.png');
+}
+
+/* TODO: Change icon image background to transparent */
+.menuIcn:hover {
+  background-color: rgb(0, 0, 255, 0.4);
+}
+
+.menuItem:hover {
+  background-color: rgb(0, 0, 255, 0.4);
 }
 
 .prevIcn {
@@ -501,6 +511,10 @@ html, body {
 
 .main_wrap:active {
   background-color: rgb(0,0,255, 0.5);
+}
+
+.main_wrap:hover {
+  background-color: rgb(0, 0, 255, 0.4);
 }
 
 .climb_selected {

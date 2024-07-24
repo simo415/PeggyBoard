@@ -116,7 +116,7 @@ function generateName()
       // Should not ever get here
       $routeName = ucfirst($noun) . " is " . ucfirst($adjective);
     }
-  } while ($routeName > $maxName);
+  } while (strlen($routeName) > $maxName);
 
   echo json_encode($routeName);
 }

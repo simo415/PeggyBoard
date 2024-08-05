@@ -139,7 +139,7 @@ A summary of the setup is provided, refer to the proceeding sections for more de
 - Setup the device with a GPIO pin as WS8212 type 1, I used GPIO13
 - Assign a static IP or hostname to device
 <div align="center">
-  <img src="images/pb_tasmota.png" alt="Tasmota Configuration" width="300px"/>
+  <img src="images/pb_tasmota_config.png" alt="Tasmota Configuration" width="300px"/>
   <br><b>Figure 10.</b> Tasmota Configuration.
 </div>
 

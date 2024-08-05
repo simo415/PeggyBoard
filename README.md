@@ -182,12 +182,12 @@ Repeat the same steps with the first few lights in the string.
 2. Drill 12-12.3mm (31/64") holes for the leds on your board.
 3. Optional, but recommended to replace led connectors, split the data line from the power+ground lines as per Figure 12.
 4. Install leds onto board. 
-  - 4.1 Start bottom left (A1)
-  - 4.2 Move to top left (A19) 
-  - 4.3 Move one right (B19) 
-  - 4.4 Move down to the bottom (B1)
-  - 4.5 Move one right (C1)
-  - 4.6 Keep repeating pattern until complete
+  4.1 Start bottom left (A1)
+  4.2 Move to top left (A19) 
+  4.3 Move one right (B19) 
+  4.4 Move down to the bottom (B1)
+  4.5 Move one right (C1)
+  4.6 Keep repeating pattern until complete
 5. Connect LED data lines together in series as per Figure 12.
 6. Connect power supply directly to each LED string as per Figure 12.
 7. Connect ESP device and level shift to power supply.

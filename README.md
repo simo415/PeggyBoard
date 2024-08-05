@@ -182,21 +182,22 @@ Repeat the same steps with the first few lights in the string.
 2. Drill 12-12.3mm (31/64") holes for the leds on your board.
 3. Optional, but recommended to replace led connectors, split the data line from the power+ground lines as per Figure 12.
 4. Install leds onto board. 
-  4.1 Start bottom left (A1)
-  4.2 Move to top left (A19) 
-  4.3 Move one right (B19) 
-  4.4 Move down to the bottom (B1)
-  4.5 Move one right (C1)
-  4.6 Keep repeating pattern until complete
+   4.1 Start bottom left (A1)
+   4.2 Move to top left (A19) 
+   4.3 Move one right (B19) 
+   4.4 Move down to the bottom (B1)
+   4.5 Move one right (C1)
+   4.6 Keep repeating pattern until complete
 5. Connect LED data lines together in series as per Figure 12.
 6. Connect power supply directly to each LED string as per Figure 12.
 7. Connect ESP device and level shift to power supply.
 8. Connect ESP device to level shift.
 9. Connect level shift to led data line at bottom left of board (A1).
 
-Note that addressable LED's typically run at 5v DC, DC voltage can be negatively affected by wire lengths. 
-Keeping wire runs as short as possible and using shielded/thicker cables will minimise signal interference and LED flicker/dim. 
-Joining the 5V and ground rails as per diagram will also help. Poor grounding, interferce and insufficient power supply can result in leds not displaying correct colours, incorrectly lighting up or failing to work altogether. 
+> [!NOTE]
+> Addressable LED's typically run at 5v DC, DC voltage can be negatively affected by wire lengths. 
+> Keeping wire runs as short as possible and using shielded/thicker cables will minimise signal interference and LED flicker/dim. 
+> Joining the 5V and ground rails as per diagram will also help. Poor grounding, interferce and insufficient power supply can result in leds not displaying correct colours, incorrectly lighting up or failing to work altogether. 
 
 ### Parts
 * [3.3V to 5V Level Shift (for LEDs)](https://littlebirdelectronics.com.au/products/iic-i2c-logic-level-converter-bi-directional-module-5v-to-3-3v-for-arduino) $3aud

@@ -148,11 +148,11 @@ Find somewhere on your local network to run the Javascript & PHP application.
 
 ### Configuration
 Modify config.php with values specific to your woody. These are the key configuration changes:
-<b>tasmota.commandPath</b>: Specify the path of your Tasmota device to run web commands.
-<b>frontend.wallLayout</b>: Specify either 'grid' or 'gridOffset'. Note that gridOffset assumes a fixed size wall of 35x21.
-<b>frontend.holdHeight</b>: Number of holds in height the wall is.
-<b>frontend.holdWidth</b>: Number of holds in width the wall is.
-<b>frontend.defaultAuthor</b>: Whose name is displayed by default for new routes. 
+- <b>tasmota.commandPath</b>: Specify the path of your Tasmota device to run web commands.
+- <b>frontend.wallLayout</b>: Specify either 'grid' or 'gridOffset'. Note that gridOffset assumes a fixed size wall of 35x21.
+- <b>frontend.holdHeight</b>: Number of holds in height the wall is.
+- <b>frontend.holdWidth</b>: Number of holds in width the wall is.
+- <b>frontend.defaultAuthor</b>: Whose name is displayed by default for new routes. 
 
 ### Option 1 - Docker Runtime
 - Build the Docker file with the embedded configuration (config.php) of your setup
@@ -179,15 +179,15 @@ Repeat the same steps with the first few lights in the string.
 ## Hardware
 
 1. Order required parts. 
-2. Drill 12-12.3mm (31/64") holes for the leds on your board. 
+2. Drill 12-12.3mm (31/64") holes for the leds on your board.
 3. Optional, but recommended to replace led connectors, split the data line from the power+ground lines as per Figure 12.
 4. Install leds onto board. 
-- 4.1 Start bottom left (A1)
-- 4.2 Move to top left (A19) 
-- 4.3 Move one right (B19) 
-- 4.4 Move down to the bottom (B1)
-- 4.5 Move one right (C1)
-- 4.6 Keep repeating pattern until complete
+  - 4.1 Start bottom left (A1)
+  - 4.2 Move to top left (A19) 
+  - 4.3 Move one right (B19) 
+  - 4.4 Move down to the bottom (B1)
+  - 4.5 Move one right (C1)
+  - 4.6 Keep repeating pattern until complete
 5. Connect LED data lines together in series as per Figure 12.
 6. Connect power supply directly to each LED string as per Figure 12.
 7. Connect ESP device and level shift to power supply.

@@ -58,8 +58,8 @@ function initPage (configuration) {
     loadRoutes();
     loadPlaylists();
     initSwipeEvents();
-    setScreenSize();
     getVersion();
+    setScreenSize();
 }
 
 // Main board functions
